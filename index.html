@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PPM Visualization</title>
+    <style>
+
+        body {
+            background-color: #203040; /* #4d5d6c */
+            font-family: Arial;
+        }
+
+        #number-of-dots {
+          height: 30px;
+          width: 100px;
+
+        }
+
+        h1 {
+            font-size: 42px;
+            color: #FFA500;
+            margin: 25px 0 25px 0;
+        }
+
+        canvas {
+            background-color: #FFFFFF;
+            border: 1px solid black;
+        }
+
+        #container {
+            width: 1300px;
+            margin: 0 auto;
+            text-align: center;
+            overflow: auto;
+        }
+
+        .input-labels {
+          color: #FFFFFF;
+        }
+
+        #range-value {
+          color: #FFFFFF
+        }
+
+        #number-of-dots {
+          text-align: center;
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h1>PPM Data Visualization</h1>
+        <label for="number-of-dots" class="input-labels">Select PPM Range (1 - 1,000,000)</label>
+        <br>
+        <br>
+        <input type="number" id="number-of-dots" name="number-of-dots" min="1" max="4000" value="100">
+        <span id="range-value"></span>
+        <label for="ppm-color" class="input-labels">Select Color</label>
+        <input type="color" id="ppm-color" name="ppm-color" value="#ff0000">
+        <p><button type="button" id="runPPM">Display PPM</button></p>
+        <p><button type="button" id="clearPPM">Clear PPM</button></p>
+        <br>
+        <br>
+        <canvas id="canvas" width="1250px" height="800px"></canvas>
+    </div>
+    <br><br><br><br><br><br>
+    <script>
+
+
+
+
+        function calculatePPM() {
+          var canvas = document.getElementById('canvas');
+          var ctx = canvas.getContext('2d');
+
+          let dots = [];
+          let numberOfDots = document.getElementById('number-of-dots').value;
+          let width = canvas.width;
+          let height = canvas.height;
+
+          console.log('canvas width is: ' + width);
+          console.log('canvas height is: ' + height);
+          console.log('the number of dots selected is: ' + numberOfDots);
+
+
+          //let duplicate = dots.includes(e => e);
+          //console.log('duplicates check is: ' + duplicate)
+
+          //
+          let maxRange = document.getElementById('number-of-dots').max;
+          console.log('max range is: ' + maxRange);
+          let minRange = document.getElementById('number-of-dots').min;
+          console.log('min range is: ' + minRange);
+
+          if (numberOfDots >= minRange && numberOfDots <= maxRange) {
+            for (let x = 1; x <= numberOfDots; x++) {
+              let dotsLength = dots.length;
+
+              function generateCoordinate() {
+                // generate x and y position for the dot
+                let xCoordinate = Math.floor(Math.random() * canvas.width);
+                let yCoordinate = Math.floor(Math.random() * canvas.height);
+                console.log('x is: ' + xCoordinate);
+                console.log('y is: ' + yCoordinate);
+
+                // check if already in data set
+                let duplicate = dots.find(e => e.x === xCoordinate && e.y === yCoordinate);
+                console.log('duplicate is: ' + !!duplicate);
+
+                // if not already in dataset add it to the dataset
+                if (!duplicate) {
+                  console.log('no duplicate found');
+                  return dots.push({x: xCoordinate, y: yCoordinate});
+                }
+              }
+
+              // while dataset array stays the same length generate another coordinate
+              while (dots.length === dotsLength) {
+                generateCoordinate();
+              }
+            }
+
+          } else {
+            alert('PPM out of range. Set range between 0 & 10000')
+          }
+
+          console.log(dots);
+
+          let dotColor = document.getElementById('ppm-color').value;
+          console.log('dot color is: ' + dotColor);
+          //ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          for (var c = 0; c < dots.length; c++) {
+              ctx.beginPath();
+              ctx.rect(dots[c].x, dots[c].y, 1, 1);
+              ctx.fillStyle = dotColor;
+              ctx.fill();
+              ctx.closePath();
+          }
+
+        }
+
+
+        function clearPPM() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+
+        document.getElementById("runPPM").onclick = function() {
+            calculatePPM();
+        }
+
+        document.getElementById("clearPPM").onclick = function() {
+            clearPPM();
+        }
+
+
+
+
+/*
+        function updateTextInput(val) {
+          document.getElementById('range-value').value=val;
+        }
+*/
+
+    </script>
+</body>
+
+</html>
