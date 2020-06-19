@@ -66,13 +66,13 @@
         <p><button type="button" id="runPPM">Display PPM</button></p>
         <br>
         <br>
-        <canvas id="canvas" width="1250px" height="800px"></canvas>
+        <canvas id="canvas" width="660px" height="660px"></canvas>
     </div>
     <br><br><br><br><br><br>
     <script>
 
 
-        // on enter press display dots
+        // if enter key pressed run "calculatePPM" function
         let onEnter = document.getElementById('number-of-dots');
         onEnter.addEventListener('keyup', function(event) {
           if (event.keyCode === 13) {
@@ -81,58 +81,54 @@
           }
         });
 
-
         function calculatePPM() {
-          var canvas = document.getElementById('canvas');
-          var ctx = canvas.getContext('2d');
-
-          let dots = []; // array to hold all the dots
-          let numberOfDots = document.getElementById('number-of-dots').value;
+          let canvas = document.getElementById('canvas');
+          let ctx = canvas.getContext('2d');
           let width = canvas.width;
           let height = canvas.height;
+          let dots = [];
+          let numberOfDots = document.getElementById('number-of-dots').value;
+          let dotColor = document.getElementById('ppm-color').value;
           let maxRange = document.getElementById('number-of-dots').max;
           let minRange = document.getElementById('number-of-dots').min;
 
-          // check if 'number of dots' falls within range. if yes do this
-          if (numberOfDots >= minRange && numberOfDots <= maxRange) {
-            for (let x = 1; x <= numberOfDots; x++) {
-              let dotsLength = dots.length;
-
-              function generateCoordinate() {
-                // generate x and y position for the dot
-                let xCoordinate = Math.floor(Math.random() * canvas.width);
-                let yCoordinate = Math.floor(Math.random() * canvas.height);
-
-                // check if already in data set
-                let duplicate = dots.find(e => e.x === xCoordinate && e.y === yCoordinate);
-
-                // if not already in dataset add it to the dataset
-                if (!duplicate) {
-                  console.log('no duplicate found');
-                  return dots.push({x: xCoordinate, y: yCoordinate});
-                }
-              }
-
-              // while dataset array stays the same length generate another coordinate
-              while (dots.length === dotsLength) {
-                generateCoordinate();
-              }
+          // class for creating each individual dot
+          class Dot {
+            constructor() {
+              this.x = Math.random() * width;
+              this.y = Math.random() * height;
+              this.z = Math.random() * width;
+              this.radius = ((width / 100) / 2) - (this.z / (width / 2));
             }
-          } else { // if number of dots outside of range send an alert to the user
-            alert('PPM out of range. Set range between 0 & 10000')
-          }
 
-          // draw dots on canvas
-          let dotColor = document.getElementById('ppm-color').value;
-          ctx.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
-          for (var c = 0; c < dots.length; c++) { // for loop to draw each dot
+            draw() {
+              ctx.globalAlpha = Math.abs(1 - (this.z / 1.5) / width);
               ctx.beginPath();
-              ctx.rect(dots[c].x, dots[c].y, 1, 1);
+              ctx.arc(this.x, this.y, this.radius, 0, 360);
               ctx.fillStyle = dotColor;
               ctx.fill();
               ctx.closePath();
+            }
+          }
+
+          if (numberOfDots >= minRange && numberOfDots <= maxRange) {
+            // add all the dots to the dots array
+            for (let i = 0; i < numberOfDots; i++) {
+              dots.push(new Dot());
+            }
+
+            // clear all previous drawing from the canvas
+            ctx.clearRect(0, 0, width, height);
+
+            // Loop through the dots array and draw every dot
+            for (var i = 0; i < dots.length; i++) {
+              dots[i].draw();
+            }
+          } else { // if number of dots outside of range send an alert to the user
+            alert('PPM out of range. Set range between 1 & ' + maxRange);
           }
         }
+
 
 
         // when 'Display PPM' button is clicked run calculatePPM function
