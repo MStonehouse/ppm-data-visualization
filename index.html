@@ -4,28 +4,40 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, noarchive, nosnippet, follow">
     <title>PPM Visualization</title>
     <style>
 
-        body {
+        html, body {
             background-color: #203040;
             font-family: Arial;
+            width: 100%;
+            margin: 0;
+            padding: 0;
         }
 
         h1 {
-            font-size: 42px;
+            font-size: 38px;
             color: #FFA500;
             margin: 25px 0 25px 0;
+        }
+
+        p {
+          color: #FFFFFF;
+          max-width: 500px;
+          margin: 0 auto;
+          padding: 5px 15px 5px 15px;
         }
 
         canvas {
             background-color: #FFFFFF;
             border: 1px solid black;
             margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         #container {
-            width: 760px;
+            max-width: 700px;
             margin: 0 auto;
             text-align: center;
             overflow: auto;
@@ -61,11 +73,16 @@
           padding: 8px 10px;
         }
 
+        @media only screen and (max-width: 500px) {
+          h1 {
+            font-size: 34px;
+          }
+        }
 
     </style>
 </head>
 
-<body>
+<body onload="calculatePPM()" onresize="calculatePPM()">
     <div id="container">
         <h1>PPM Visualization</h1>
 
@@ -77,24 +94,32 @@
             <input type="number" id="number-of-dots" name="number-of-dots" min="1" max="8000" value="400" autofocus>
           </div>
         </div>
-        
+
         <div class="selector-div">
           <div class="selector-element">
             <label for="ppm-color" class="input-labels">Select Color</label>
           </div>
           <div class="selector-element">
-            <input type="color" id="ppm-color" name="ppm-color" value="#ff0000">
+            <input type="color" id="ppm-color" name="ppm-color" value="#5B0000">
           </div>
         </div>
 
 
-        <div class="selector-element">
-          <button type="button" id="runPPM">Display PPM</button>
+        <div class="selector-div">
+          <div class="selector-element">
+            <button type="button" id="runPPM">Display PPM</button>
+          </div>
         </div>
 
-        <canvas id="canvas" width="660px" height="660px"></canvas>
+        <canvas id="canvas"></canvas>
+
+        <p>About PPM Visualization: The display area is based on a 100 particle
+          width X 100 particle height X 100 particle depth to give a total volume
+          of 1 million particles.</p>
+
+        <br><br><br><br>
     </div>
-    <br><br><br><br><br><br>
+
     <script>
 
 
@@ -107,9 +132,15 @@
           }
         });
 
+        window.addEventListener("orientationchange", function() {
+          calculatePPM();
+        });
+
         function calculatePPM() {
           let canvas = document.getElementById('canvas');
           let ctx = canvas.getContext('2d');
+          ctx.canvas.width = window.innerWidth > 700 ? 660 : window.innerWidth * .95;
+          ctx.canvas.height = window.innerWidth > 700 ? 660 : window.innerWidth * .95;
           let width = canvas.width;
           let height = canvas.height;
           let dots = [];
@@ -124,11 +155,11 @@
               this.x = Math.random() * width;
               this.y = Math.random() * height;
               this.z = Math.random() * width;
-              this.radius = ((width / 100) / 2) - (this.z / (width / 2));
+              this.radius = width > 400 ? ((width / 100) / 2) - (this.z / width) : (width / 100) / 2;
             }
 
             draw() {
-              ctx.globalAlpha = Math.abs(1 - (this.z / 1.5) / width);
+              ctx.globalAlpha = Math.abs(1 - (this.z / 1.9) / width);
               ctx.beginPath();
               ctx.arc(this.x, this.y, this.radius, 0, 360);
               ctx.fillStyle = dotColor;
