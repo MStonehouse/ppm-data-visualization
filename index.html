@@ -8,7 +8,7 @@
     <style>
 
         body {
-            background-color: #203040; /* #4d5d6c */
+            background-color: #203040;
             font-family: Arial;
         }
 
@@ -21,10 +21,11 @@
         canvas {
             background-color: #FFFFFF;
             border: 1px solid black;
+            margin-top: 20px;
         }
 
         #container {
-            width: 1300px;
+            width: 760px;
             margin: 0 auto;
             text-align: center;
             overflow: auto;
@@ -49,23 +50,48 @@
           width: 80px;
         }
 
+        .selector-div {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .selector-element {
+          display: inline-block;
+          padding: 8px 10px;
+        }
+
 
     </style>
 </head>
 
 <body>
     <div id="container">
-        <h1>PPM Data Visualization</h1>
-        <label for="number-of-dots" class="input-labels">Select PPM (1 - 4000)</label>
-        <br>
-        <br>
-        <input type="number" id="number-of-dots" name="number-of-dots" min="1" max="4000" value="400" autofocus>
-        <span id="range-value"></span>
-        <label for="ppm-color" class="input-labels">Select Color</label>
-        <input type="color" id="ppm-color" name="ppm-color" value="#ff0000">
-        <p><button type="button" id="runPPM">Display PPM</button></p>
-        <br>
-        <br>
+        <h1>PPM Visualization</h1>
+
+        <div class="selector-div">
+          <div class="selector-element">
+            <label for="number-of-dots" class="input-labels">Select PPM (1 - 8000)</label>
+          </div>
+          <div class="selector-element">
+            <input type="number" id="number-of-dots" name="number-of-dots" min="1" max="8000" value="400" autofocus>
+          </div>
+        </div>
+        
+        <div class="selector-div">
+          <div class="selector-element">
+            <label for="ppm-color" class="input-labels">Select Color</label>
+          </div>
+          <div class="selector-element">
+            <input type="color" id="ppm-color" name="ppm-color" value="#ff0000">
+          </div>
+        </div>
+
+
+        <div class="selector-element">
+          <button type="button" id="runPPM">Display PPM</button>
+        </div>
+
         <canvas id="canvas" width="660px" height="660px"></canvas>
     </div>
     <br><br><br><br><br><br>
@@ -128,8 +154,6 @@
             alert('PPM out of range. Set range between 1 & ' + maxRange);
           }
         }
-
-
 
         // when 'Display PPM' button is clicked run calculatePPM function
         document.getElementById("runPPM").onclick = function() {
