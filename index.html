@@ -2,196 +2,241 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="robots" content="noindex, noarchive, nosnippet, follow">
-    <title>PPM Visualization</title>
-    <style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        html, body {
-            background-color: #203040;
-            font-family: Arial;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-        }
+  <!-- bootstrap styling -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-        h1 {
-            font-size: 38px;
-            color: #FFA500;
-            margin: 25px 0 25px 0;
-        }
 
-        p {
-          color: #FFFFFF;
-          max-width: 500px;
-          margin: 0 auto;
-          padding: 5px 15px 5px 15px;
-        }
+  <!-- google icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-        canvas {
-            background-color: #FFFFFF;
-            border: 1px solid black;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
+  <title>PPM Visualization</title>
 
-        #container {
-            max-width: 700px;
-            margin: 0 auto;
-            text-align: center;
-            overflow: auto;
-        }
+  <style>
+    html,
+    body {
+      background-color: #3b414d;
+      font-family: Arial;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
 
-        .input-labels {
-          color: #FFFFFF;
-        }
+    h1 {
+      font-size: 38px;
+      color: #fff;
+      margin: 25px 0 25px 0;
+    }
 
-        #range-value {
-          color: #FFFFFF
-        }
+    p {
+      color: #FFFFFF;
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 5px 15px 5px 15px;
+    }
 
-        #number-of-dots {
-          text-align: center;
-          height: 30px;
-          width: 100px;
-        }
+    canvas {
+      background-color: #FFFFFF;
+      border: 1px solid grey;
+      margin: 0 auto 2.5vw auto;
+    }
 
-        #ppm-color {
-          height: 30px;
-          width: 80px;
-        }
+    #container {
+      margin: 0 auto;
+      text-align: center;
+      overflow: auto;
+    }
 
-        .selector-div {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
+    #range-value {
+      color: #FFFFFF
+    }
 
-        .selector-element {
-          display: inline-block;
-          padding: 8px 10px;
-        }
+    #input-container {
+      width: 90vw;
+      max-width: 400px;
+      background-color: #ffffff;
+      padding: 20px;
+      margin: 0 auto 20px auto;
+      border-radius: 5px;
+      text-align: left;
+    }
 
-        @media only screen and (max-width: 500px) {
-          h1 {
-            font-size: 34px;
-          }
-        }
+    .info-icon:hover {
+      color: #007bff;
+      cursor: pointer;
+    }
 
-    </style>
+    @media only screen and (max-width: 500px) {
+      h1 {
+        font-size: 34px;
+      }
+    }
+  </style>
 </head>
 
-<body onload="calculatePPM()" onresize="calculatePPM()">
-    <div id="container">
-        <h1>PPM Visualization</h1>
+<body onresize="windowResize()">
+  <div id="container">
+    <h1>PPM Visualization</h1>
 
-        <div class="selector-div">
-          <div class="selector-element">
-            <label for="number-of-dots" class="input-labels">Select PPM (1 - 8000)</label>
-          </div>
-          <div class="selector-element">
-            <input type="number" id="number-of-dots" name="number-of-dots" min="1" max="8000" value="400" autofocus>
-          </div>
+    <div id="input-container">
+      <div class="form-group">
+        <label class="col-form-label col-form-label-sm" for="number-of-dots">Select PPM (1 - 10000)</label>
+        <input class="form-control form-control-sm" type="number" id="number-of-dots" name="number-of-dots" min="1" max="10000" value="400" autofocus>
+      </div>
+
+      <hr>
+
+      <div class="form-group">
+        <label class="col-form-label col-form-label-sm" for="ppm-color">Select Color</label>
+        <input class="form-control form-control-sm" type="color" id="ppm-color" name="ppm-color" value="#a10067">
+      </div>
+
+      <hr>
+
+      <div class="form-group">
+
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" id="gas" name="statetype" value="300" checked>
+          <label for="gas" class="form-check-label">gas</label>
         </div>
 
-        <div class="selector-div">
-          <div class="selector-element">
-            <label for="ppm-color" class="input-labels">Select Color</label>
-          </div>
-          <div class="selector-element">
-            <input type="color" id="ppm-color" name="ppm-color" value="#5B0000">
-          </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" id="liquid-solid>" name="statetype" value="100">
+          <label for="liquid-solid" class="form-check-label">liquid &#x2f; solid</label>
         </div>
 
-
-        <div class="selector-div">
-          <div class="selector-element">
-            <button type="button" id="runPPM">Display PPM</button>
-          </div>
+        <div class="form-check form-check-inline">
+          <i class="material-icons info-icon" onclick="alert('')">info_outline</i>
         </div>
 
-        <canvas id="canvas"></canvas>
+      </div>
 
-        <p>About PPM Visualization: The display area is based on a 100 particle
-          width X 100 particle height X 100 particle depth to give a total volume
-          of 1 million particles.</p>
+      <hr>
 
-        <br><br><br><br>
+      <div>
+        <button type="button" class="btn btn-primary btn-sm" id="runPPM">Calculate PPM</button>
+      </div>
+
     </div>
 
-    <script>
+    <canvas id="canvas"></canvas>
 
 
-        // if enter key pressed run "calculatePPM" function
-        let onEnter = document.getElementById('number-of-dots');
-        onEnter.addEventListener('keyup', function(event) {
-          if (event.keyCode === 13) {
-            event.preventDefault();
-            document.getElementById('runPPM').click();
-          }
-        });
+  </div>
 
-        window.addEventListener("orientationchange", function() {
-          calculatePPM();
-        });
+  <script>
+    var canvas = document.getElementById('canvas');
+    var ctx = canvas.getContext('2d');
+    ctx.canvas.width = window.innerWidth > 900 ? 860 : window.innerWidth * .9;
+    ctx.canvas.height = window.innerWidth > 900 ? 860 : window.innerWidth * .9; // set height same as width for simplicity
+    var width = canvas.width;
+    var height = canvas.height;
+    var xCenter = width / 2; // X center position for rotation calculation
+    var zCenter = width / 2; // Z center position for rotation calculation
+    var blockWidth = width * .6; // set volume(block) width as a percentage of canvas width
+    var blockHeight = height * .6; // set volume(block) height as a percentage of canvas height
+    var dots; // array to hold all dots
+    var frame; // contains the animation frame
+    var rotationSpeed = 0.01; // value is in radians
+    var numberOfDots = Number(document.getElementById('number-of-dots').value); // get initial number of dots
+    var particleColor = document.getElementById('ppm-color').value; // get initial particle color
+    var stateType = document.querySelector('input[name="statetype"]:checked').value; // get initial radio button selection for gas or solid/liquid
+    var maxRange = Number(document.getElementById('number-of-dots').max); // get max number of particles
 
-        function calculatePPM() {
-          let canvas = document.getElementById('canvas');
-          let ctx = canvas.getContext('2d');
-          ctx.canvas.width = window.innerWidth > 700 ? 660 : window.innerWidth * .95;
-          ctx.canvas.height = window.innerWidth > 700 ? 660 : window.innerWidth * .95;
-          let width = canvas.width;
-          let height = canvas.height;
-          let dots = [];
-          let numberOfDots = document.getElementById('number-of-dots').value;
-          let dotColor = document.getElementById('ppm-color').value;
-          let maxRange = document.getElementById('number-of-dots').max;
-          let minRange = document.getElementById('number-of-dots').min;
 
-          // class for creating each individual dot
-          class Dot {
-            constructor() {
-              this.x = Math.random() * width;
-              this.y = Math.random() * height;
-              this.z = Math.random() * width;
-              this.radius = width > 400 ? ((width / 100) / 2) - (this.z / width) : (width / 100) / 2;
-            }
+    class Particle {
+      constructor() {
+        this.x = (Math.random() * blockWidth) + ((width - blockWidth) / 2);
+        this.y = (Math.random() * blockHeight) + ((height - blockHeight) / 2);
+        this.z = (Math.random() * blockWidth) + ((width - blockWidth) / 2); // set z depth same as width
+        this.yAdjusted; // to hold y position based on depth perspective
+      }
+      rotate() {
+        let tempX = ((this.x - xCenter) * Math.cos(rotationSpeed)) - ((this.z - zCenter) * Math.sin(rotationSpeed));
+        let tempZ = ((this.z - zCenter) * Math.cos(rotationSpeed)) + ((this.x - xCenter) * Math.sin(rotationSpeed));
+        this.x = tempX + xCenter;
+        this.z = tempZ + zCenter;
 
-            draw() {
-              ctx.globalAlpha = Math.abs(1 - (this.z / 1.9) / width);
-              ctx.beginPath();
-              ctx.arc(this.x, this.y, this.radius, 0, 360);
-              ctx.fillStyle = dotColor;
-              ctx.fill();
-              ctx.closePath();
-            }
-          }
+        let perspectiveRatio = ((zCenter - this.y) / (blockHeight / 2)); // gives a number between -1 and 1 to represent how far from Y center particle is
+        let zRatio = (this.z - (width / 2)) / (blockWidth / 2); // gives a number from -1 to 1 to represent particle depth
+        let magnitude = 30; // multiplier to apply to perspectiveRatio and zRatio
+        this.yAdjusted = this.y + (perspectiveRatio * zRatio * magnitude);
+      }
+      draw() {
+        let particleWidth = blockWidth / stateType; // 100 = solid-liquid, 300 = gas
+        ctx.globalAlpha = Math.abs(1 - ((this.z / width) / 1.3));
+        ctx.beginPath();
+        ctx.arc(this.x, this.yAdjusted, particleWidth, 0, 360);
+        ctx.fillStyle = particleColor;
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
 
-          if (numberOfDots >= minRange && numberOfDots <= maxRange) {
-            // add all the dots to the dots array
-            for (let i = 0; i < numberOfDots; i++) {
-              dots.push(new Dot());
-            }
 
-            // clear all previous drawing from the canvas
-            ctx.clearRect(0, 0, width, height);
+    // make requisite number of dots
+    function makeDots() {
+      numberOfDots = document.getElementById('number-of-dots').value; // get current number of dots
+      particleColor = document.getElementById('ppm-color').value; // get current color
+      stateType = document.querySelector('input[name="statetype"]:checked').value; // get if gas or solid/liquid
 
-            // Loop through the dots array and draw every dot
-            for (var i = 0; i < dots.length; i++) {
-              dots[i].draw();
-            }
-          } else { // if number of dots outside of range send an alert to the user
-            alert('PPM out of range. Set range between 1 & ' + maxRange);
-          }
+      if (numberOfDots <= maxRange && numberOfDots >= 1) { // if numberOfDots is in range
+        dots = []; // erase existing dots
+
+        for (let i = 0; i < numberOfDots; i++) {
+          dots.push(new Particle())
         }
+      }
 
-        // when 'Display PPM' button is clicked run calculatePPM function
-        document.getElementById("runPPM").onclick = function() {
-            calculatePPM();
-        }
+    }
 
-    </script>
+
+    // on window resize reset canvas width and height and recalculate all relevant sizes
+    function windowResize() {
+      ctx.canvas.width = window.innerWidth > 900 ? 860 : window.innerWidth * .95;
+      ctx.canvas.height = window.innerWidth > 900 ? 860 : window.innerWidth * .95; // set height same as width for simplicity
+      width = canvas.width;
+      height = canvas.height;
+      xCenter = width / 2; // X center position for rotation calculation
+      zCenter = height / 2; // Y center position for rotation calculation
+      blockWidth = width * .6; // set volume(block) width as a percentage of canvas width
+      blockHeight = height * .6;
+      window.cancelAnimationFrame(frame); // cancel current animation frame
+      makeDots();
+      window.requestAnimationFrame(calculatePPM);
+    }
+
+
+
+    // draw all the dots to the canvas
+    function calculatePPM() {
+      ctx.clearRect(0, 0, width, height);
+
+      for (let j = 0; j < dots.length; j++) {
+        dots[j].rotate();
+        dots[j].draw();
+      }
+
+      frame = window.requestAnimationFrame(calculatePPM)
+    }
+
+
+
+    // when 'Calculate PPM' button is clicked run calculatePPM function
+    document.getElementById("runPPM").onclick = function() {
+      window.cancelAnimationFrame(frame); // cancel current animation frame
+      makeDots(); // make a new set of dots based on new user settings
+      window.requestAnimationFrame(calculatePPM); // request new animation frame and run it
+    }
+
+
+    // run initial program
+    makeDots();
+    window.requestAnimationFrame(calculatePPM);
+
+  </script>
 </body>
 
 </html>
