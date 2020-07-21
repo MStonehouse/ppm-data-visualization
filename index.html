@@ -346,7 +346,9 @@
 
 
     function makeBoundingBox() {
-      boundingBox = new BoundingBox();
+      if (numberOfParticles <= maxRange && numberOfParticles >= 1) { // if numberOfDots is in range
+        boundingBox = new BoundingBox();
+      }
     }
 
 
