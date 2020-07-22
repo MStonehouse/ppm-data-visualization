@@ -1,0 +1,57 @@
+html, body {
+  background-color: #3b414d !important;
+  font-family: Arial;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 38px;
+  color: #fff;
+  margin: 25px 0 25px 0 !important;
+}
+
+p {
+  color: #FFFFFF;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 5px 15px 5px 15px;
+}
+
+canvas {
+  background-color: #FFFFFF;
+  border: 1px solid grey;
+  margin: 0 auto 2.5vw auto;
+}
+
+#container {
+  margin: 0 auto;
+  text-align: center;
+  overflow: auto;
+}
+
+#range-value {
+  color: #FFFFFF
+}
+
+#input-container {
+  width: 90vw;
+  max-width: 400px;
+  background-color: #ffffff;
+  padding: 20px;
+  margin: 0 auto 20px auto;
+  border-radius: 5px;
+  text-align: left;
+}
+
+.info-icon:hover {
+  color: #007bff;
+  cursor: pointer;
+}
+
+@media only screen and (max-width: 500px) {
+  h1 {
+    font-size: 34px;
+  }
+}
