@@ -1,3 +1,3 @@
 # Part Per Million Visualization
 
-Parts Per Million Data Visualization
+A simple rotating cube of particles to help visualize parts per million
